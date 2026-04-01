@@ -38,7 +38,7 @@ export default function PhaseView({ items, onAdd }) {
                   </div>
                 </div>
                 <ul className="phase-item-list">
-                  {phaseItems.map((item) => (
+                  {[...phaseItems.filter(i => !i.purchased), ...phaseItems.filter(i => i.purchased)].map((item) => (
                     <li key={item.id} className={`phase-item ${item.purchased ? 'phase-item-purchased' : ''}`}>
                       <span className="phase-item-name">{item.name}</span>
                       <span className="phase-item-price">{formatPrice(item.price)}</span>
