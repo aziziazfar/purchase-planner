@@ -2,6 +2,7 @@ import { useState } from 'react';
 import StarRating from './StarRating';
 
 const SORT_OPTIONS = [
+  { label: 'Phase (1 → ...)', fn: (a, b) => (a.phase || 1) - (b.phase || 1) },
   { label: 'Priority (High → Low)', fn: (a, b) => b.importance - a.importance },
   { label: 'Priority (Low → High)', fn: (a, b) => a.importance - b.importance },
   { label: 'Date (Soonest)', fn: (a, b) => new Date(a.plannedDate) - new Date(b.plannedDate) },
@@ -56,6 +57,7 @@ export default function ItemList({ items, onEdit, onDelete, onAdd, onTogglePurch
             <tr>
               <th className="col-check"></th>
               <th>Item</th>
+              <th>Phase</th>
               <th>Planned Date</th>
               <th>Price</th>
               <th>Priority</th>
@@ -82,6 +84,9 @@ export default function ItemList({ items, onEdit, onDelete, onAdd, onTogglePurch
                     </a>
                   )}
                 </td>
+                <td>
+                  <span className="phase-badge">Phase {item.phase || 1}</span>
+                </td>
                 <td>{formatDate(item.plannedDate)}</td>
                 <td className="price-cell">{formatPrice(item.price)}</td>
                 <td><StarRating value={item.importance} readOnly /></td>
@@ -96,7 +101,7 @@ export default function ItemList({ items, onEdit, onDelete, onAdd, onTogglePurch
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={3}><strong>Total</strong></td>
+              <td colSpan={4}><strong>Total</strong></td>
               <td className="price-cell"><strong>{formatPrice(total)}</strong></td>
               <td colSpan={2} />
             </tr>

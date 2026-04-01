@@ -10,6 +10,8 @@ const defaultItems = [
     link: 'https://example.com/sofa',
     importance: 3,
     purchased: false,
+    phase: 1,
+    paidBy: [],
   },
   {
     id: '2',
@@ -20,6 +22,8 @@ const defaultItems = [
     link: '',
     importance: 5,
     purchased: false,
+    phase: 1,
+    paidBy: [],
   },
   {
     id: '3',
@@ -30,6 +34,8 @@ const defaultItems = [
     link: '',
     importance: 2,
     purchased: false,
+    phase: 2,
+    paidBy: [],
   },
 ];
 
