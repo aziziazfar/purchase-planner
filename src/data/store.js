@@ -9,6 +9,7 @@ const defaultItems = [
     details: 'L-shaped sofa for the living room',
     link: 'https://example.com/sofa',
     importance: 3,
+    purchased: false,
   },
   {
     id: '2',
@@ -18,6 +19,7 @@ const defaultItems = [
     details: 'Side-by-side fridge with freezer',
     link: '',
     importance: 5,
+    purchased: false,
   },
   {
     id: '3',
@@ -27,6 +29,7 @@ const defaultItems = [
     details: '6-seater wooden dining table',
     link: '',
     importance: 2,
+    purchased: false,
   },
 ];
 
@@ -53,6 +56,12 @@ export function addItem(items, item) {
 
 export function updateItem(items, updated) {
   const result = items.map((i) => (i.id === updated.id ? updated : i));
+  saveItems(result);
+  return result;
+}
+
+export function togglePurchased(items, id) {
+  const result = items.map((i) => (i.id === id ? { ...i, purchased: !i.purchased } : i));
   saveItems(result);
   return result;
 }

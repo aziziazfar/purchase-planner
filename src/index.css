@@ -5,40 +5,103 @@
 }
 
 :root {
-  --glass-bg: rgba(255, 255, 255, 0.12);
-  --glass-bg-heavy: rgba(255, 255, 255, 0.18);
-  --glass-border: rgba(255, 255, 255, 0.22);
-  --glass-border-heavy: rgba(255, 255, 255, 0.35);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  --glass-shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.15);
-
-  --text: rgba(255, 255, 255, 0.95);
-  --text-muted: rgba(255, 255, 255, 0.55);
-  --text-subtle: rgba(255, 255, 255, 0.35);
-
-  --accent: #a78bfa;
-  --accent-hover: #c4b5fd;
-  --accent-glow: rgba(167, 139, 250, 0.35);
-  --danger: #f87171;
-  --danger-glow: rgba(248, 113, 113, 0.25);
-
-  --star-filled: #fbbf24;
-  --star-empty: rgba(255, 255, 255, 0.2);
-
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 14px;
-  color: var(--text);
+}
+
+/* ── Palette tokens ── */
+:root {
+  --blue: #60b2e5;
+  --brown: #63372c;
+  --red: #df7373;
+  --green: #33673b;
+  --cream: #f2e5d7;
+}
+
+/* ── Dark mode (default) ── */
+.app[data-theme="dark"] {
+  --glass-bg: rgba(242, 229, 215, 0.08);
+  --glass-bg-heavy: rgba(242, 229, 215, 0.13);
+  --glass-border: rgba(242, 229, 215, 0.18);
+  --glass-border-heavy: rgba(242, 229, 215, 0.32);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --row-border: rgba(255, 255, 255, 0.07);
+  --close-btn-bg: rgba(255, 255, 255, 0.08);
+  --close-btn-hover-bg: rgba(255, 255, 255, 0.15);
+  --card-bg: rgba(255, 255, 255, 0.07);
+  --card-hover-bg: rgba(255, 255, 255, 0.12);
+
+  --text: rgba(242, 229, 215, 0.95);
+  --text-muted: rgba(242, 229, 215, 0.55);
+  --text-subtle: rgba(242, 229, 215, 0.3);
+
+  --accent: #60b2e5;
+  --accent-hover: #8ecaed;
+  --accent-glow: rgba(96, 178, 229, 0.3);
+  --accent-btn-text: #0f1e2a;
+
+  --danger: #df7373;
+  --star-filled: #df7373;
+  --star-empty: rgba(242, 229, 215, 0.2);
+
+  --modal-bg: rgba(26, 12, 8, 0.78);
+  --row-hover: rgba(255, 255, 255, 0.06);
+  --th-bg: rgba(255, 255, 255, 0.06);
+  --tfoot-bg: rgba(255, 255, 255, 0.06);
+  --select-option-bg: #1a0f0a;
+
+  background:
+    radial-gradient(ellipse at 15% 15%, rgba(96, 178, 229, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 10%, rgba(99, 55, 44, 0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 85%, rgba(51, 103, 59, 0.45) 0%, transparent 50%),
+    radial-gradient(ellipse at 10% 80%, rgba(223, 115, 115, 0.3) 0%, transparent 45%),
+    #1a0f0a;
+  background-attachment: fixed;
+}
+
+/* ── Light mode ── */
+.app[data-theme="light"] {
+  --glass-bg: rgba(255, 255, 255, 0.45);
+  --glass-bg-heavy: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(99, 55, 44, 0.15);
+  --glass-border-heavy: rgba(99, 55, 44, 0.28);
+  --glass-shadow: 0 8px 32px rgba(99, 55, 44, 0.12);
+  --row-border: rgba(99, 55, 44, 0.08);
+  --close-btn-bg: rgba(99, 55, 44, 0.08);
+  --close-btn-hover-bg: rgba(99, 55, 44, 0.15);
+  --card-bg: rgba(255, 255, 255, 0.5);
+  --card-hover-bg: rgba(255, 255, 255, 0.75);
+
+  --text: #2a1208;
+  --text-muted: rgba(42, 18, 8, 0.55);
+  --text-subtle: rgba(42, 18, 8, 0.3);
+
+  --accent: #2d8fc7;
+  --accent-hover: #1a6f9e;
+  --accent-glow: rgba(45, 143, 199, 0.25);
+  --accent-btn-text: #ffffff;
+
+  --danger: #c0392b;
+  --star-filled: #c0392b;
+  --star-empty: rgba(99, 55, 44, 0.2);
+
+  --modal-bg: rgba(245, 234, 220, 0.9);
+  --row-hover: rgba(99, 55, 44, 0.05);
+  --th-bg: rgba(99, 55, 44, 0.06);
+  --tfoot-bg: rgba(99, 55, 44, 0.06);
+  --select-option-bg: #f2e5d7;
+
+  background:
+    radial-gradient(ellipse at 10% 10%, rgba(96, 178, 229, 0.18) 0%, transparent 45%),
+    radial-gradient(ellipse at 88% 8%, rgba(242, 229, 215, 0.7) 0%, transparent 45%),
+    radial-gradient(ellipse at 75% 90%, rgba(51, 103, 59, 0.12) 0%, transparent 45%),
+    radial-gradient(ellipse at 5% 85%, rgba(223, 115, 115, 0.12) 0%, transparent 40%),
+    #f5ece2;
+  background-attachment: fixed;
 }
 
 body {
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse at 20% 20%, rgba(124, 58, 237, 0.45) 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 10%, rgba(59, 130, 246, 0.35) 0%, transparent 50%),
-    radial-gradient(ellipse at 60% 80%, rgba(16, 185, 129, 0.25) 0%, transparent 50%),
-    radial-gradient(ellipse at 10% 80%, rgba(236, 72, 153, 0.2) 0%, transparent 45%),
-    #0f0a1e;
-  background-attachment: fixed;
 }
 
 #root {

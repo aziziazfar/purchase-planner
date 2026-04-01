@@ -23,11 +23,12 @@ function formatPrice(price) {
   return `$${Number(price).toLocaleString('en-SG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-export default function ItemList({ items, onEdit, onDelete, onAdd }) {
+export default function ItemList({ items, onEdit, onDelete, onAdd, onTogglePurchased }) {
   const [sortIdx, setSortIdx] = useState(0);
 
   const sorted = [...items].sort(SORT_OPTIONS[sortIdx].fn);
   const total = items.reduce((sum, i) => sum + (i.price || 0), 0);
+  const purchasedCount = items.filter((i) => i.purchased).length;
 
   return (
     <div className="item-list">
@@ -35,7 +36,7 @@ export default function ItemList({ items, onEdit, onDelete, onAdd }) {
         <div className="budget-summary">
           <span className="budget-label">Total Budget</span>
           <span className="budget-amount">{formatPrice(total)}</span>
-          <span className="budget-count">{items.length} item{items.length !== 1 ? 's' : ''}</span>
+          <span className="budget-count">{purchasedCount}/{items.length} bought</span>
         </div>
         <div className="list-controls">
           <select value={sortIdx} onChange={(e) => setSortIdx(Number(e.target.value))}>
@@ -53,6 +54,7 @@ export default function ItemList({ items, onEdit, onDelete, onAdd }) {
         <table className="items-table">
           <thead>
             <tr>
+              <th className="col-check"></th>
               <th>Item</th>
               <th>Planned Date</th>
               <th>Price</th>
@@ -62,7 +64,15 @@ export default function ItemList({ items, onEdit, onDelete, onAdd }) {
           </thead>
           <tbody>
             {sorted.map((item) => (
-              <tr key={item.id}>
+              <tr key={item.id} className={item.purchased ? 'row-purchased' : ''}>
+                <td className="col-check">
+                  <input
+                    type="checkbox"
+                    className="purchase-checkbox"
+                    checked={!!item.purchased}
+                    onChange={() => onTogglePurchased(item.id)}
+                  />
+                </td>
                 <td>
                   <div className="item-name">{item.name}</div>
                   {item.details && <div className="item-details">{item.details}</div>}
@@ -86,7 +96,7 @@ export default function ItemList({ items, onEdit, onDelete, onAdd }) {
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={2}><strong>Total</strong></td>
+              <td colSpan={3}><strong>Total</strong></td>
               <td className="price-cell"><strong>{formatPrice(total)}</strong></td>
               <td colSpan={2} />
             </tr>
