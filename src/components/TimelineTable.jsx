@@ -59,6 +59,9 @@ export default function TimelineTable({ items, onEdit, onDelete, onAdd }) {
                     <span className="month-total">
                       {formatPrice(monthMap[m].reduce((s, i) => s + (i.price || 0), 0))}
                     </span>
+                    <span className="month-upcoming">
+                      {formatPrice(monthMap[m].filter((i) => !i.purchased).reduce((s, i) => s + (i.price || 0), 0))} upcoming
+                    </span>
                   </div>
                 </th>
               ))}

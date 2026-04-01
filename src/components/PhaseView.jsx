@@ -30,7 +30,12 @@ export default function PhaseView({ items, onAdd }) {
               <div key={phase} className="phase-column">
                 <div className="phase-column-header">
                   <span className="phase-column-title">Phase {phase}</span>
-                  <span className="phase-column-total">{formatPrice(total)}</span>
+                  <div className="phase-column-amounts">
+                    <span className="phase-column-total">{formatPrice(total)}</span>
+                    <span className="phase-column-upcoming">
+                      {formatPrice(phaseItems.filter((i) => !i.purchased).reduce((s, i) => s + (i.price || 0), 0))} upcoming
+                    </span>
+                  </div>
                 </div>
                 <ul className="phase-item-list">
                   {phaseItems.map((item) => (
