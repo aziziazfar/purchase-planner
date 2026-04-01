@@ -89,20 +89,6 @@ export default function ContributionsView({ items, profiles, onAdd }) {
                       </div>
 
                       <div className="cv-profile-detail">
-                        {profilePaid.length > 0 && (
-                          <div className="cv-section">
-                            <span className="cv-section-label paid">Paid</span>
-                            <ul className="cv-item-list">
-                              {profilePaid.map(({ item, amount }) => (
-                                <li key={item.id} className="cv-item">
-                                  <span className="cv-item-name">{item.name}</span>
-                                  <span className="cv-item-amount">{formatPrice(amount)}</span>
-                                </li>
-                              ))}
-                            </ul>
-                            <div className="cv-subtotal">{formatPrice(profilePaidTotal)}</div>
-                          </div>
-                        )}
                         {profileUpcoming.length > 0 && (
                           <div className="cv-section">
                             <span className="cv-section-label upcoming">Upcoming</span>
@@ -115,6 +101,20 @@ export default function ContributionsView({ items, profiles, onAdd }) {
                               ))}
                             </ul>
                             <div className="cv-subtotal upcoming">{formatPrice(profileUpcomingTotal)}</div>
+                          </div>
+                        )}
+                        {profilePaid.length > 0 && (
+                          <div className="cv-section">
+                            <span className="cv-section-label paid">Paid</span>
+                            <ul className="cv-item-list">
+                              {profilePaid.map(({ item, amount }) => (
+                                <li key={item.id} className="cv-item">
+                                  <span className="cv-item-name">{item.name}</span>
+                                  <span className="cv-item-amount">{formatPrice(amount)}</span>
+                                </li>
+                              ))}
+                            </ul>
+                            <div className="cv-subtotal">{formatPrice(profilePaidTotal)}</div>
                           </div>
                         )}
                       </div>

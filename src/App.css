@@ -706,7 +706,7 @@
 }
 
 .cv-section-label.upcoming {
-  color: var(--accent-hover);
+  color: var(--danger);
 }
 
 .cv-item-list {
@@ -742,7 +742,7 @@
 }
 
 .cv-subtotal.upcoming {
-  color: var(--accent-hover);
+  color: var(--danger);
 }
 
 .contribution-avatar {
