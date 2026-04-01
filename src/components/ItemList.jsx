@@ -27,9 +27,11 @@ function formatPrice(price) {
 export default function ItemList({ items, onEdit, onDelete, onAdd, onTogglePurchased }) {
   const [sortIdx, setSortIdx] = useState(0);
 
-  const sorted = [...items].sort(SORT_OPTIONS[sortIdx].fn);
+  const sortFn = SORT_OPTIONS[sortIdx].fn;
+  const unpurchased = [...items].filter((i) => !i.purchased).sort(sortFn);
+  const purchased = [...items].filter((i) => i.purchased).sort(sortFn);
   const total = items.reduce((sum, i) => sum + (i.price || 0), 0);
-  const purchasedCount = items.filter((i) => i.purchased).length;
+  const purchasedCount = purchased.length;
 
   return (
     <div className="item-list">
@@ -49,7 +51,7 @@ export default function ItemList({ items, onEdit, onDelete, onAdd, onTogglePurch
         </div>
       </div>
 
-      {sorted.length === 0 ? (
+      {items.length === 0 ? (
         <div className="empty-state">No items yet. Click <strong>+ Add Item</strong> to get started.</div>
       ) : (
         <table className="items-table">
@@ -65,28 +67,48 @@ export default function ItemList({ items, onEdit, onDelete, onAdd, onTogglePurch
             </tr>
           </thead>
           <tbody>
-            {sorted.map((item) => (
-              <tr key={item.id} className={item.purchased ? 'row-purchased' : ''}>
+            {unpurchased.map((item) => (
+              <tr key={item.id}>
                 <td className="col-check">
-                  <input
-                    type="checkbox"
-                    className="purchase-checkbox"
-                    checked={!!item.purchased}
-                    onChange={() => onTogglePurchased(item.id)}
-                  />
+                  <input type="checkbox" className="purchase-checkbox" checked={false} onChange={() => onTogglePurchased(item.id)} />
                 </td>
                 <td>
                   <div className="item-name">{item.name}</div>
                   {item.details && <div className="item-details">{item.details}</div>}
                   {item.link && (
-                    <a href={item.link} target="_blank" rel="noreferrer" className="item-link">
-                      View item ↗
-                    </a>
+                    <a href={item.link} target="_blank" rel="noreferrer" className="item-link">View item ↗</a>
                   )}
                 </td>
+                <td><span className="phase-badge">Phase {item.phase || 1}</span></td>
+                <td>{formatDate(item.plannedDate)}</td>
+                <td className="price-cell">{formatPrice(item.price)}</td>
+                <td><StarRating value={item.importance} readOnly /></td>
                 <td>
-                  <span className="phase-badge">Phase {item.phase || 1}</span>
+                  <div className="action-buttons">
+                    <button className="btn-edit" onClick={() => onEdit(item)}>Edit</button>
+                    <button className="btn-delete" onClick={() => onDelete(item.id)}>Delete</button>
+                  </div>
                 </td>
+              </tr>
+            ))}
+            {purchased.length > 0 && (
+              <tr className="purchased-divider">
+                <td colSpan={7}>Bought ({purchased.length})</td>
+              </tr>
+            )}
+            {purchased.map((item) => (
+              <tr key={item.id} className="row-purchased">
+                <td className="col-check">
+                  <input type="checkbox" className="purchase-checkbox" checked={true} onChange={() => onTogglePurchased(item.id)} />
+                </td>
+                <td>
+                  <div className="item-name">{item.name}</div>
+                  {item.details && <div className="item-details">{item.details}</div>}
+                  {item.link && (
+                    <a href={item.link} target="_blank" rel="noreferrer" className="item-link">View item ↗</a>
+                  )}
+                </td>
+                <td><span className="phase-badge">Phase {item.phase || 1}</span></td>
                 <td>{formatDate(item.plannedDate)}</td>
                 <td className="price-cell">{formatPrice(item.price)}</td>
                 <td><StarRating value={item.importance} readOnly /></td>
