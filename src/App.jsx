@@ -1,64 +1,91 @@
-import { useState, useEffect } from 'react';
-import { loadItems, addItem, updateItem, deleteItem, togglePurchased } from './data/store';
-import { loadProfiles, addProfile } from './data/profiles';
-import { exportToFile, importFromFile, saveToCache } from './data/io';
+import { useState, useEffect, useRef } from 'react';
+import { Routes, Route, useParams } from 'react-router-dom';
+import { listenToRoom, saveRoom } from './data/firestore';
+import { exportToFile, importFromFile } from './data/io';
 import ItemList from './views/ItemList';
 import TimelineTable from './views/Timeline';
 import PhaseView from './views/Phase';
 import ContributionsView from './views/Contributions';
+import Landing from './views/Landing';
 import ItemModal from './components/ItemModal';
 import DataMenu from './components/DataMenu';
 import './App.css';
 
-export default function App() {
-  const [items, setItems] = useState(loadItems);
-  const [profiles, setProfiles] = useState(loadProfiles);
+function RoomApp() {
+  const { roomId } = useParams();
+  const [items, setItems] = useState([]);
+  const [profiles, setProfiles] = useState([]);
   const [tab, setTab] = useState('list');
   const [modal, setModal] = useState(null);
   const [theme, setTheme] = useState('dark');
+  const [syncing, setSyncing] = useState(true);
+
+  // Refs so async Firestore writes always have current state
+  const itemsRef = useRef(items);
+  const profilesRef = useRef(profiles);
+  useEffect(() => { itemsRef.current = items; }, [items]);
+  useEffect(() => { profilesRef.current = profiles; }, [profiles]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    if (!roomId) return;
+    const unsub = listenToRoom(roomId, (data) => {
+      setItems(data.items || []);
+      setProfiles(data.profiles || []);
+      setSyncing(false);
+    });
+    return unsub;
+  }, [roomId]);
+
+  function write(newItems, newProfiles) {
+    saveRoom(roomId, newItems, newProfiles ?? profilesRef.current);
+  }
+
   function handleAdd() { setModal('add'); }
   function handleEdit(item) { setModal(item); }
 
   function handleTogglePurchased(id) {
-    setItems((prev) => togglePurchased(prev, id));
+    const updated = items.map((i) => i.id === id ? { ...i, purchased: !i.purchased } : i);
+    setItems(updated);
+    write(updated);
   }
 
   function handleDelete(id) {
     if (!window.confirm('Delete this item?')) return;
-    setItems((prev) => deleteItem(prev, id));
+    const updated = items.filter((i) => i.id !== id);
+    setItems(updated);
+    write(updated);
   }
 
   function handleSave(formData) {
+    let updated;
     if (modal === 'add') {
-      setItems((prev) => addItem(prev, formData));
+      updated = [...items, { ...formData, id: crypto.randomUUID() }];
     } else {
-      setItems((prev) => updateItem(prev, formData));
+      updated = items.map((i) => i.id === formData.id ? formData : i);
     }
+    setItems(updated);
+    write(updated);
     setModal(null);
   }
 
   function handleCreateProfile(name) {
-    setProfiles((prev) => addProfile(prev, name));
+    const updated = [...profiles, { id: crypto.randomUUID(), name: name.trim() }];
+    setProfiles(updated);
+    saveRoom(roomId, itemsRef.current, updated);
   }
 
-  // Data menu handlers
   function handleSaveFile() { exportToFile(items, profiles); }
   function handleLoadFile(onSuccess, onError) {
     importFromFile((newItems, newProfiles) => {
       setItems(newItems);
       setProfiles(newProfiles);
+      saveRoom(roomId, newItems, newProfiles);
       onSuccess();
     }, onError);
-  }
-  function handleSaveCache() { saveToCache(items, profiles); }
-  function handleLoadCache() {
-    setItems(loadItems());
-    setProfiles(loadProfiles());
   }
 
   return (
@@ -66,14 +93,14 @@ export default function App() {
       <header className="app-header">
         <div className="header-content">
           <h1>Purchase Planner</h1>
-          <p>Plan and track your upcoming purchases</p>
+          <p>Room: <span className="room-id-badge">{roomId}</span></p>
         </div>
         <div className="header-actions">
           <DataMenu
             onSaveFile={handleSaveFile}
             onLoadFile={handleLoadFile}
-            onSaveCache={handleSaveCache}
-            onLoadCache={handleLoadCache}
+            onSaveCache={() => {}}
+            onLoadCache={() => {}}
           />
           <button
             className="theme-toggle"
@@ -101,7 +128,9 @@ export default function App() {
       </div>
 
       <main className="main-content">
-        {tab === 'list' ? (
+        {syncing ? (
+          <div className="sync-loading">Connecting…</div>
+        ) : tab === 'list' ? (
           <ItemList items={items} onEdit={handleEdit} onDelete={handleDelete} onAdd={handleAdd} onTogglePurchased={handleTogglePurchased} />
         ) : tab === 'timeline' ? (
           <TimelineTable items={items} onEdit={handleEdit} onDelete={handleDelete} onAdd={handleAdd} />
@@ -122,5 +151,14 @@ export default function App() {
         />
       )}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/:roomId" element={<RoomApp />} />
+    </Routes>
   );
 }
