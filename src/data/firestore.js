@@ -1,5 +1,7 @@
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot, collection, getCountFromServer } from 'firebase/firestore';
 import { db } from './firebase';
+
+const ROOM_LIMIT = 10;
 
 export async function roomExists(roomId) {
   const snap = await getDoc(doc(db, 'rooms', roomId));
@@ -7,6 +9,10 @@ export async function roomExists(roomId) {
 }
 
 export async function createRoom(roomId) {
+  const snapshot = await getCountFromServer(collection(db, 'rooms'));
+  if (snapshot.data().count >= ROOM_LIMIT) {
+    throw new Error(`Room limit of ${ROOM_LIMIT} reached.`);
+  }
   await setDoc(doc(db, 'rooms', roomId), { items: [], profiles: [] });
 }
 
