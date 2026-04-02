@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import StarRating from './StarRating';
+import StarRating from '../../components/StarRating';
 
 const SORT_OPTIONS = [
   { label: 'Phase (1 → ...)', fn: (a, b) => (a.phase || 1) - (b.phase || 1) },

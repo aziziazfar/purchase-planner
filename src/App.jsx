@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { loadItems, addItem, updateItem, deleteItem, togglePurchased } from './data/store';
 import { loadProfiles, addProfile } from './data/profiles';
-import ItemList from './components/ItemList';
-import TimelineTable from './components/TimelineTable';
-import PhaseView from './components/PhaseView';
-import ContributionsView from './components/ContributionsView';
+import ItemList from './views/ItemList';
+import TimelineTable from './views/Timeline';
+import PhaseView from './views/Phase';
+import ContributionsView from './views/Contributions';
 import ItemModal from './components/ItemModal';
 import './App.css';
 

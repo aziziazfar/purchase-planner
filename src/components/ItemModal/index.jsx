@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import StarRating from './StarRating';
+import StarRating from '../StarRating';
 
 const empty = {
   name: '',

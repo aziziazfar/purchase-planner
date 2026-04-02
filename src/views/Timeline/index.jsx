@@ -1,4 +1,4 @@
-import StarRating from './StarRating';
+import StarRating from '../../components/StarRating';
 
 function formatPrice(price) {
   return `$${Number(price).toLocaleString('en-SG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
