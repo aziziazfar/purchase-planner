@@ -108,6 +108,10 @@
   letter-spacing: 0.5px;
 }
 
+.budget-label--upcoming {
+  margin-left: 8px;
+}
+
 .budget-amount {
   font-size: 20px;
   font-weight: 700;
@@ -1313,8 +1317,22 @@ html, body, #root, .app {
   }
   .action-buttons { justify-content: flex-end; }
 
-  /* Purchased divider */
-  .purchased-divider td { border-radius: 8px; }
+  /* Purchased divider — higher specificity to override the grid on tbody tr */
+  .items-table tbody tr.purchased-divider {
+    display: block;
+    width: 100%;
+    padding: 0;
+    background: none;
+    border: none !important;
+    border-radius: 8px;
+    margin-bottom: 4px;
+  }
+  .items-table tbody tr.purchased-divider td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 8px;
+  }
 
   /* ── Timeline ── */
   .timeline-table th {
@@ -1331,6 +1349,22 @@ html, body, #root, .app {
   }
 
   /* ── Contributions ── */
+  .contributions-view .budget-summary {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: start;
+    gap: 2px 12px;
+    align-items: center;
+  }
+  .budget-label--upcoming { margin-left: 0; }
+  .contributions-view .budget-amount {
+    font-size: 14px;
+    text-align: left;
+  }
+  .cv-phase-totals {
+    flex-direction: column;
+    align-items: flex-start;
+  }
   .cv-profile-row {
     flex-direction: column;
     gap: 10px;

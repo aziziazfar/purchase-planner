@@ -36,7 +36,7 @@ export default function ContributionsView({ items, profiles, onAdd }) {
         <div className="budget-summary">
           <span className="budget-label">Paid</span>
           <span className="budget-amount">{formatPrice(totalPaid)}</span>
-          <span className="budget-label" style={{ marginLeft: 8 }}>Upcoming</span>
+          <span className="budget-label budget-label--upcoming">Upcoming</span>
           <span className="budget-amount">{formatPrice(totalUpcoming)}</span>
         </div>
         <button className="btn-primary" onClick={onAdd}>+ Add Item</button>
