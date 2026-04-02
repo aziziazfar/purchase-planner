@@ -1,6 +1,6 @@
 # 💰 Purchase Planner
 
-A personal purchase planning and cashflow forecasting tool. Plan upcoming purchases, track who is paying for what, organise items by phase, and visualise your spending across months — all stored locally in your browser with no backend required.
+A household purchase planning and cashflow forecasting tool. Plan upcoming purchases, track who is paying for what, organise items by phase, and visualise your spending across months — synced in real time across devices via Firebase Firestore.
 
 ---
 
@@ -10,6 +10,44 @@ A personal purchase planning and cashflow forecasting tool. Plan upcoming purcha
 
 - Node.js v18+ (tested on v22.4.0)
 - npm
+- A [Firebase](https://console.firebase.google.com) project with Firestore enabled
+
+### Firebase setup
+
+1. Go to [console.firebase.google.com](https://console.firebase.google.com) and create a project
+2. In the project, go to **Firestore Database → Create database** — choose **Start in test mode**
+3. Go to **Project Settings → Your apps → Add app (Web)** and copy the config values
+4. Go to **Firestore Database → Rules** and paste the following:
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /rooms/{roomId} {
+      allow read, write: if true;
+    }
+  }
+}
+```
+
+### Environment variables
+
+Copy `.env.example` to `.env` and fill in your Firebase config:
+
+```bash
+cp .env.example .env
+```
+
+```env
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+```
+
+`.env` is gitignored and never committed.
 
 ### Running locally
 
@@ -27,7 +65,27 @@ npm run build
 npm run preview
 ```
 
-The output in `dist/` is a fully static site — it can be hosted on GitHub Pages, Netlify, Vercel, or any static host with no server configuration needed.
+---
+
+## Rooms
+
+The app is organised around **rooms** — a shared workspace identified by a short room ID (e.g. `HOME42`).
+
+### Creating a room
+
+1. Open the app — you'll land on the home screen
+2. Leave the room ID blank and click **Create Room** to auto-generate an ID, or type your own first
+3. You'll be taken to `#/YOURROOMID`
+
+### Joining a room
+
+1. Open the app
+2. Enter the room ID your household is using
+3. Click **Join Room**
+
+### Sharing
+
+Once inside a room, both devices see the same data in real time. Share the URL directly (`purchase-planner/#/YOURROOMID`) or just tell the other person the room ID.
 
 ---
 
@@ -107,7 +165,7 @@ Profiles represent the people sharing the purchases (e.g. you and a partner or h
 3. Click **+ Create a profile** (or **+ New profile** if profiles already exist)
 4. Type the name and press **Add** or hit Enter
 
-Profiles are stored separately in localStorage and persist across sessions.
+Profiles are stored in Firestore alongside items and sync across devices.
 
 ### Assigning contributions
 
@@ -117,18 +175,22 @@ Once profiles exist, the **Paid By** section in the item modal shows each profil
 
 ## Data Management
 
-The **Data ▾** dropdown in the top-right header provides four options:
+The **Data ▾** dropdown in the top-right header provides two file options:
 
 | Option | Description |
 |---|---|
-| **Save to cache** | Manually flush current state to localStorage |
-| **Load from cache** | Reload data from localStorage (discards any unsaved in-memory state) |
 | **Save to file** | Downloads a dated `.json` snapshot of all items and profiles |
-| **Load from file** | Upload a previously saved `.json` to restore items and profiles |
+| **Load from file** | Upload a previously saved `.json` to restore items and profiles into the current room |
+
+### Migrating from a previous version
+
+If you have data from a localStorage-based version of the app:
+
+1. On the old version, go to **Data ▾ → Save to file** to export a `.json`
+2. Create a new room on this version
+3. Go to **Data ▾ → Load from file** and select the exported file — it will be pushed to Firestore
 
 ### File format
-
-Exported files follow this structure:
 
 ```json
 {
@@ -139,15 +201,6 @@ Exported files follow this structure:
 }
 ```
 
-This makes it straightforward to back up, share, or migrate your data.
-
-### Cache vs file
-
-- **Cache (localStorage)** is automatic — every add, edit, delete, and checkbox toggle saves immediately. Use _Save to cache_ if you want an explicit checkpoint, or _Load from cache_ to roll back to the last saved state.
-- **File** is a portable snapshot. Use this for backups, transferring data between devices, or sharing a plan with someone else.
-
-> Both methods work fully on static hosts like GitHub Pages — no server required.
-
 ---
 
 ## Theme
@@ -156,23 +209,48 @@ Toggle between **dark mode** and **light mode** using the ☀️ / 🌙 button i
 
 ---
 
+## Deploying to GitHub Pages
+
+The repo includes a GitHub Actions workflow that builds and deploys to GitHub Pages on every push to `main`.
+
+You must add your Firebase config as repository secrets before deploying:
+
+1. Go to your repo → **Settings → Secrets and variables → Actions → New repository secret**
+2. Add each of the following:
+
+| Secret name | Value |
+|---|---|
+| `VITE_FIREBASE_API_KEY` | your API key |
+| `VITE_FIREBASE_AUTH_DOMAIN` | `your-project.firebaseapp.com` |
+| `VITE_FIREBASE_PROJECT_ID` | `your-project-id` |
+| `VITE_FIREBASE_STORAGE_BUCKET` | `your-project.firebasestorage.app` |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | your sender ID |
+| `VITE_FIREBASE_APP_ID` | your app ID |
+
+Then push to `main` — the workflow will build with the secrets injected and deploy automatically.
+
+---
+
 ## Project Structure
 
 ```
 src/
   views/
-    ItemList/         # Item List tab
-    Timeline/         # Timeline View tab
-    Phase/            # Phase View tab
-    Contributions/    # Contributions tab
+    Landing/         # Room create / join screen
+    ItemList/        # Item List tab
+    Timeline/        # Timeline View tab
+    Phase/           # Phase View tab
+    Contributions/   # Contributions tab
   components/
-    ItemModal/        # Add / Edit item modal
-    StarRating/       # 1–5 star priority selector
-    DataMenu/         # Save / Load dropdown
+    ItemModal/       # Add / Edit item modal
+    StarRating/      # 1–5 star priority selector
+    DataMenu/        # Save / Load dropdown
   data/
-    store.js          # Items CRUD + localStorage handler
-    profiles.js       # Profiles CRUD + localStorage handler
-    io.js             # File export / import logic
+    firebase.js      # Firebase app initialisation (reads from .env)
+    firestore.js     # Firestore helpers: roomExists, createRoom, listenToRoom, saveRoom
+    store.js         # Item CRUD helpers
+    profiles.js      # Profile CRUD helpers
+    io.js            # File export / import logic
   App.jsx
   App.css
   index.css
@@ -185,5 +263,6 @@ src/
 
 - **React 19** — UI
 - **Vite 5** — build tool (v5 required for Node 22.4 compatibility)
-- **localStorage** — persistence, no backend
+- **Firebase Firestore** — real-time sync across devices
+- **React Router DOM v7** — `HashRouter` for GitHub Pages compatibility
 - **Plain CSS** — glassmorphism design using the palette `#60b2e5 · #63372c · #df7373 · #33673b · #f2e5d7`
