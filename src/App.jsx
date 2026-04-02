@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { loadItems, addItem, updateItem, deleteItem, togglePurchased } from './data/store';
 import { loadProfiles, addProfile } from './data/profiles';
+import { exportToFile, importFromFile, saveToCache } from './data/io';
 import ItemList from './views/ItemList';
 import TimelineTable from './views/Timeline';
 import PhaseView from './views/Phase';
 import ContributionsView from './views/Contributions';
 import ItemModal from './components/ItemModal';
+import DataMenu from './components/DataMenu';
 import './App.css';
 
 export default function App() {
@@ -40,6 +42,21 @@ export default function App() {
     setProfiles((prev) => addProfile(prev, name));
   }
 
+  // Data menu handlers
+  function handleSaveFile() { exportToFile(items, profiles); }
+  function handleLoadFile(onSuccess, onError) {
+    importFromFile((newItems, newProfiles) => {
+      setItems(newItems);
+      setProfiles(newProfiles);
+      onSuccess();
+    }, onError);
+  }
+  function handleSaveCache() { saveToCache(items, profiles); }
+  function handleLoadCache() {
+    setItems(loadItems());
+    setProfiles(loadProfiles());
+  }
+
   return (
     <div className="app" data-theme={theme}>
       <header className="app-header">
@@ -47,13 +64,21 @@ export default function App() {
           <h1>Purchase Planner</h1>
           <p>Plan and track your upcoming purchases</p>
         </div>
-        <button
-          className="theme-toggle"
-          onClick={() => setTheme((t) => t === 'dark' ? 'light' : 'dark')}
-          title="Toggle theme"
-        >
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </button>
+        <div className="header-actions">
+          <DataMenu
+            onSaveFile={handleSaveFile}
+            onLoadFile={handleLoadFile}
+            onSaveCache={handleSaveCache}
+            onLoadCache={handleLoadCache}
+          />
+          <button
+            className="theme-toggle"
+            onClick={() => setTheme((t) => t === 'dark' ? 'light' : 'dark')}
+            title="Toggle theme"
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+        </div>
       </header>
 
       <div className="tabs">
