@@ -104,6 +104,15 @@ body {
   min-height: 100vh;
 }
 
+[data-theme="dark"] body,
+:root:not([data-theme]) body {
+  background: #1a0f0a;
+}
+
+[data-theme="light"] body {
+  background: #f5ece2;
+}
+
 #root {
   min-height: 100vh;
 }

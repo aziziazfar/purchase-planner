@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { loadItems, addItem, updateItem, deleteItem, togglePurchased } from './data/store';
 import { loadProfiles, addProfile } from './data/profiles';
 import { exportToFile, importFromFile, saveToCache } from './data/io';
@@ -16,6 +16,10 @@ export default function App() {
   const [tab, setTab] = useState('list');
   const [modal, setModal] = useState(null);
   const [theme, setTheme] = useState('dark');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   function handleAdd() { setModal('add'); }
   function handleEdit(item) { setModal(item); }
