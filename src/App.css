@@ -347,7 +347,7 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
-  touch-action: pan-x;
+  touch-action: pan-x pan-y;
   border-radius: 14px;
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
