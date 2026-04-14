@@ -37,6 +37,16 @@ export default function ItemModal({ item, profiles, onSave, onClose, onCreatePro
     return form.paidBy.find((p) => p.profileId === profileId)?.amount ?? '';
   }
 
+  function handleEqualSplit() {
+    const price = parseFloat(form.price) || 0;
+    if (profiles.length === 0 || price === 0) return;
+    const share = Math.round((price / profiles.length) * 100) / 100;
+    setForm((f) => ({
+      ...f,
+      paidBy: profiles.map((p) => ({ profileId: p.id, amount: share })),
+    }));
+  }
+
   function handleCreateProfile() {
     if (!newProfileName.trim()) return;
     onCreateProfile(newProfileName.trim());
@@ -124,6 +134,11 @@ export default function ItemModal({ item, profiles, onSave, onClose, onCreatePro
           <div className="paid-by-section">
             <div className="paid-by-header">
               <span className="paid-by-label">Paid By</span>
+              {profiles.length > 0 && (
+                <button type="button" className="btn-equal-split" onClick={handleEqualSplit}>
+                  Equal Split
+                </button>
+              )}
             </div>
             {profiles.length === 0 && !showNewProfile ? (
               <button type="button" className="btn-add-profile" onClick={() => setShowNewProfile(true)}>

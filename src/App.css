@@ -896,6 +896,23 @@
   letter-spacing: 0.5px;
 }
 
+.btn-equal-split {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 4px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  background: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-equal-split:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
 .paid-by-rows {
   display: flex;
   flex-direction: column;
