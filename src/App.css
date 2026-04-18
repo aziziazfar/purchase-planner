@@ -426,6 +426,19 @@
   margin-bottom: 0;
 }
 
+.timeline-card--purchased {
+  opacity: 0.70;
+}
+
+.timeline-purchased-tick {
+  display: block;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 700;
+  color: #6ab187;
+  margin-top: 6px;
+}
+
 .timeline-card:hover {
   background: var(--card-hover-bg);
   border-color: var(--glass-border-heavy);

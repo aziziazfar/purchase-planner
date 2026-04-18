@@ -72,9 +72,12 @@ export default function TimelineTable({ items, onEdit, onDelete, onAdd }) {
               {months.map((m) => (
                 <td key={m} className="timeline-cell">
                   {monthMap[m]
-                    .sort((a, b) => b.importance - a.importance)
+                    .sort((a, b) => {
+                      if (a.purchased !== b.purchased) return a.purchased ? 1 : -1;
+                      return b.importance - a.importance;
+                    })
                     .map((item) => (
-                      <div key={item.id} className="timeline-card">
+                      <div key={item.id} className={`timeline-card${item.purchased ? ' timeline-card--purchased' : ''}`}>
                         <div className="card-header">
                           <span className="card-name">{item.name}</span>
                           <StarRating value={item.importance} readOnly />
@@ -90,6 +93,7 @@ export default function TimelineTable({ items, onEdit, onDelete, onAdd }) {
                           <button className="btn-edit" onClick={() => onEdit(item)}>Edit</button>
                           <button className="btn-delete" onClick={() => onDelete(item.id)}>Delete</button>
                         </div>
+                        {item.purchased && <span className="timeline-purchased-tick">✓</span>}
                       </div>
                     ))}
                 </td>
