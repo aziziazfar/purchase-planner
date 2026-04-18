@@ -24,6 +24,6 @@ export function listenToRoom(roomId, callback) {
   });
 }
 
-export async function saveRoom(roomId, items, profiles) {
-  await setDoc(doc(db, 'rooms', roomId), { items, profiles });
+export async function saveRoom(roomId, items, profiles, todos = []) {
+  await setDoc(doc(db, 'rooms', roomId), { items, profiles, todos });
 }

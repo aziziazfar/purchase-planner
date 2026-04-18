@@ -6,6 +6,7 @@ import ItemList from './views/ItemList';
 import TimelineTable from './views/Timeline';
 import PhaseView from './views/Phase';
 import ContributionsView from './views/Contributions';
+import CalendarView from './views/Calendar';
 import Landing from './views/Landing';
 import ItemModal from './components/ItemModal';
 import DataMenu from './components/DataMenu';
@@ -15,6 +16,7 @@ function RoomApp() {
   const { roomId } = useParams();
   const [items, setItems] = useState([]);
   const [profiles, setProfiles] = useState([]);
+  const [todos, setTodos] = useState([]);
   const [tab, setTab] = useState('list');
   const [modal, setModal] = useState(null);
   const [theme, setTheme] = useState('dark');
@@ -23,8 +25,10 @@ function RoomApp() {
   // Refs so async Firestore writes always have current state
   const itemsRef = useRef(items);
   const profilesRef = useRef(profiles);
+  const todosRef = useRef(todos);
   useEffect(() => { itemsRef.current = items; }, [items]);
   useEffect(() => { profilesRef.current = profiles; }, [profiles]);
+  useEffect(() => { todosRef.current = todos; }, [todos]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -35,13 +39,24 @@ function RoomApp() {
     const unsub = listenToRoom(roomId, (data) => {
       setItems(data.items || []);
       setProfiles(data.profiles || []);
+      setTodos(data.todos || []);
       setSyncing(false);
     });
     return unsub;
   }, [roomId]);
 
-  function write(newItems, newProfiles) {
-    saveRoom(roomId, newItems, newProfiles ?? profilesRef.current);
+  function write(newItems, newProfiles, newTodos) {
+    saveRoom(
+      roomId,
+      newItems ?? itemsRef.current,
+      newProfiles ?? profilesRef.current,
+      newTodos ?? todosRef.current,
+    );
+  }
+
+  function handleTodosChange(updated) {
+    setTodos(updated);
+    write(null, null, updated);
   }
 
   function handleAdd() { setModal('add'); }
@@ -75,7 +90,7 @@ function RoomApp() {
   function handleCreateProfile(name) {
     const updated = [...profiles, { id: crypto.randomUUID(), name: name.trim() }];
     setProfiles(updated);
-    saveRoom(roomId, itemsRef.current, updated);
+    write(null, updated);
   }
 
   function handleSaveFile() { exportToFile(items, profiles); }
@@ -83,7 +98,7 @@ function RoomApp() {
     importFromFile((newItems, newProfiles) => {
       setItems(newItems);
       setProfiles(newProfiles);
-      saveRoom(roomId, newItems, newProfiles);
+      write(newItems, newProfiles);
       onSuccess();
     }, onError);
   }
@@ -125,6 +140,9 @@ function RoomApp() {
         <button className={`tab ${tab === 'contributions' ? 'active' : ''}`} onClick={() => setTab('contributions')}>
           Contributions
         </button>
+        <button className={`tab ${tab === 'calendar' ? 'active' : ''}`} onClick={() => setTab('calendar')}>
+          Calendar
+        </button>
       </div>
 
       <main className="main-content">
@@ -136,8 +154,10 @@ function RoomApp() {
           <TimelineTable items={items} onEdit={handleEdit} onDelete={handleDelete} onAdd={handleAdd} />
         ) : tab === 'phase' ? (
           <PhaseView items={items} onAdd={handleAdd} />
-        ) : (
+        ) : tab === 'contributions' ? (
           <ContributionsView items={items} profiles={profiles} onAdd={handleAdd} />
+        ) : (
+          <CalendarView items={items} todos={todos} onTodosChange={handleTodosChange} />
         )}
       </main>
 
