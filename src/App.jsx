@@ -45,8 +45,8 @@ const IcSun = () => (
   </svg>
 );
 const IcMoon = () => (
-  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
-    <path d="M12.5 10A6 6 0 0 1 5 2.5a6.5 6.5 0 1 0 7.5 7.5z"/>
+  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M11.5 9.5A5 5 0 0 1 5.5 3.5a5 5 0 0 0 0 8 5 5 0 0 0 6-2z"/>
   </svg>
 );
 const IcChevrons = () => (
@@ -58,10 +58,23 @@ const IcChevrons = () => (
 // ── Logo icon ─────────────────────────────────────────────────────────────────
 const LogoIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-    <rect x="3" y="3" width="8" height="8" rx="1.5" fill="var(--accent)"/>
-    <rect x="13" y="3" width="8" height="8" rx="1.5" fill="var(--accent)" opacity="0.5"/>
-    <rect x="3" y="13" width="8" height="8" rx="1.5" fill="var(--accent)" opacity="0.3"/>
-    <rect x="13" y="13" width="8" height="8" rx="1.5" fill="var(--accent)" opacity="0.7"/>
+    {/* P2 — offset right 5, down 3 (behind) */}
+    <path
+      d="M8.5 22V5.5C17.5 5.5 17.5 14.5 8.5 14.5"
+      stroke="var(--accent)"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      opacity="0.4"
+    />
+    {/* P1 — front */}
+    <path
+      d="M3.5 21V2.5C12.5 2.5 12.5 11.5 3.5 11.5"
+      stroke="var(--accent)"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
@@ -246,12 +259,21 @@ function RoomApp() {
             <span className="app-topbar-title">{activeLabel}</span>
             <span className="room-id-badge">{roomId}</span>
           </div>
-          <DataMenu
-            onSaveFile={handleSaveFile}
-            onLoadFile={handleLoadFile}
-            onSaveCache={() => {}}
-            onLoadCache={() => {}}
-          />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button
+              className="topbar-theme-toggle"
+              onClick={() => setTheme((t) => t === 'dark' ? 'light' : 'dark')}
+              title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            >
+              {theme === 'dark' ? <IcSun /> : <IcMoon />}
+            </button>
+            <DataMenu
+              onSaveFile={handleSaveFile}
+              onLoadFile={handleLoadFile}
+              onSaveCache={() => {}}
+              onLoadCache={() => {}}
+            />
+          </div>
         </div>
 
         <main className="main-content">

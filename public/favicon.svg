@@ -1,12 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- bag knot -->
-  <rect x="12" y="4" width="8" height="5" rx="2.5" fill="#4a7c59"/>
-  <!-- knot highlight -->
-  <ellipse cx="16" cy="9" rx="5" ry="2" fill="#33673b"/>
-  <!-- bag body -->
-  <ellipse cx="16" cy="20" rx="11" ry="10" fill="#f59e0b"/>
-  <!-- bag shading -->
-  <ellipse cx="13" cy="17" rx="4" ry="5" fill="#fcd34d" opacity="0.5"/>
-  <!-- dollar sign -->
-  <text x="16" y="25" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#0f1e2a">$</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- P2: offset right 5, down 3 (behind) -->
+  <path
+    d="M8.5 22V5.5C17.5 5.5 17.5 14.5 8.5 14.5"
+    stroke="oklch(0.52 0.14 225)"
+    stroke-width="2.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.4"
+  />
+  <!-- P1: front -->
+  <path
+    d="M3.5 21V2.5C12.5 2.5 12.5 11.5 3.5 11.5"
+    stroke="oklch(0.52 0.14 225)"
+    stroke-width="2.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
 </svg>

@@ -984,6 +984,7 @@
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 96px;
 }
 
 .cal-day-header {
@@ -1001,13 +1002,14 @@
 .cal-day-header:last-child { border-right: none; }
 
 .cal-cell {
-  min-height: 96px;
+  height: 96px;
   padding: 7px 8px;
   border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 3px;
+  overflow: hidden;
 }
 
 .cal-cell:nth-child(7n) { border-right: none; }
@@ -1493,10 +1495,11 @@
 .data-menu-trigger:hover { background: var(--surface2); }
 
 .data-menu-dropdown {
-  position: absolute;
-  top: calc(100% + 5px);
-  right: 0;
+  position: fixed;
+  top: 52px;
+  right: 16px;
   min-width: 170px;
+  max-width: calc(100vw - 32px);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -1715,6 +1718,20 @@
     padding: 0 16px;
   }
 
+  .topbar-theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--t2);
+    cursor: pointer;
+  }
+  .topbar-theme-toggle:hover { background: var(--surface2); }
+
   .main-content {
     padding: 14px 16px;
   }
@@ -1815,8 +1832,10 @@
 
   /* Calendar */
   .calendar-view { flex-direction: column; }
+  .calendar-panel { width: 100%; flex: none; align-self: stretch; }
   .cal-right-panel { width: 100%; }
-  .cal-cell { min-height: 60px; padding: 4px 5px; }
+  .calendar-grid { grid-auto-rows: 60px; }
+  .cal-cell { min-height: unset; height: 60px; padding: 4px 5px; overflow: hidden; }
 
   /* Contributions */
   .cv-profile-row { flex-direction: column; gap: 8px; }
@@ -1832,7 +1851,6 @@
   .paid-by-row { flex-wrap: wrap; }
   .paid-by-amount { width: 100%; }
 
-  .data-menu-dropdown { right: auto; left: 0; }
 
   .list-toolbar { flex-direction: column; align-items: stretch; gap: 9px; }
   .budget-summary { flex-wrap: wrap; gap: 7px 10px; padding: 9px 13px; }
@@ -1842,4 +1860,5 @@
 
 @media (min-width: 641px) {
   .mobile-nav { display: none; }
+  .topbar-theme-toggle { display: none; }
 }
