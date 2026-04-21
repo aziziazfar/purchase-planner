@@ -52,7 +52,7 @@ export default function Landing() {
   }
 
   return (
-    <div className="landing" data-theme="dark">
+    <div className="landing">
       <div className="landing-card">
         <div className="landing-logo">💰</div>
         <h1 className="landing-title">Purchase Planner</h1>
