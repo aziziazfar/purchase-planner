@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 const URGENCY_ICONS = { 1: '❗', 2: '❗❗', 3: '❗❗❗' };
 const DAY_HEADERS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const MAX_VISIBLE = 2; // max chips shown per day cell before overflow
+const MAX_VISIBLE = 2;
 
 function formatPrice(price) {
   return `$${Number(price).toLocaleString('en-SG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -13,7 +13,7 @@ function ymd(year, month, day) {
 }
 
 function firstDayOffset(year, month) {
-  const day = new Date(year, month, 1).getDay(); // 0=Sun
+  const day = new Date(year, month, 1).getDay();
   return (day + 6) % 7; // Monday-based
 }
 
@@ -24,7 +24,12 @@ function formatDayLabel(dateKey) {
   });
 }
 
-// ── Day detail modal ─────────────────────────────────────────────────────────
+function monthKeyLabel(key) {
+  const [y, m] = key.split('-').map(Number);
+  return new Date(y, m - 1, 1).toLocaleDateString('en-MY', { month: 'long', year: 'numeric' });
+}
+
+// ── Day detail modal ──────────────────────────────────────────────────────────
 function DayModal({ dayKey, dayTodos, dayPayments, onClose, onEdit }) {
   return (
     <div className="cal-day-modal-backdrop" onClick={onClose}>
@@ -66,21 +71,33 @@ function DayModal({ dayKey, dayTodos, dayPayments, onClose, onEdit }) {
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
-export default function CalendarView({ items, todos, onTodosChange, onEdit }) {
+export default function CalendarView({ items, todos, onTodosChange, onEdit, onAdd }) {
   const today = new Date();
   const [viewDate, setViewDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
   const [showAddForm, setShowAddForm] = useState(false);
   const [newTodo, setNewTodo] = useState({ description: '', date: '', urgency: 2 });
-  const [dayModal, setDayModal] = useState(null); // { key, dayTodos, dayPayments }
+  const [dayModal, setDayModal] = useState(null);
 
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const offset = firstDayOffset(year, month);
   const todayKey = ymd(today.getFullYear(), today.getMonth(), today.getDate());
+  const currentMonthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
   const monthLabel = viewDate.toLocaleDateString('en-MY', { month: 'long', year: 'numeric' });
 
-  // Index by date
+  // ── Monthly overview stats (across all items) ──
+  const monthMap = {};
+  for (const item of items) {
+    if (!item.plannedDate) continue;
+    const key = item.plannedDate.slice(0, 7);
+    if (!monthMap[key]) monthMap[key] = { total: 0, upcoming: 0 };
+    monthMap[key].total += item.price || 0;
+    if (!item.purchased) monthMap[key].upcoming += item.price || 0;
+  }
+  const statMonths = Object.keys(monthMap).sort();
+
+  // ── Index items by date for calendar cells ──
   const todosByDate = {};
   for (const t of todos) {
     if (!t.date) continue;
@@ -102,6 +119,11 @@ export default function CalendarView({ items, todos, onTodosChange, onEdit }) {
   ];
 
   const sortedTodos = [...todos].sort((a, b) => b.urgency - a.urgency);
+
+  function goToMonth(key) {
+    const [y, m] = key.split('-').map(Number);
+    setViewDate(new Date(y, m - 1, 1));
+  }
 
   function handleAddTodo(e) {
     e.preventDefault();
@@ -176,66 +198,106 @@ export default function CalendarView({ items, todos, onTodosChange, onEdit }) {
         </div>
       </div>
 
-      {/* ── Right: Todo list ── */}
-      <div className="todo-panel">
-        <div className="todo-panel-header">
-          <span className="todo-panel-title">To Do</span>
-          <button className="btn-primary" onClick={() => setShowAddForm((v) => !v)}>
-            {showAddForm ? 'Cancel' : '+ Add'}
-          </button>
+      {/* ── Right: Overview + To Do ── */}
+      <div className="cal-right-panel">
+
+        {/* Monthly overview */}
+        <div className="cal-overview-panel">
+          <div className="cal-overview-header">
+            <span className="cal-overview-title">Overview</span>
+            <button className="btn-primary" style={{ fontSize: '11px', padding: '5px 10px' }} onClick={onAdd}>
+              + Add Item
+            </button>
+          </div>
+          {statMonths.length === 0 ? (
+            <div className="cal-overview-empty">No items yet.</div>
+          ) : (
+            <ul className="cal-overview-list">
+              {statMonths.map((key) => {
+                const { total, upcoming } = monthMap[key];
+                const isActive = key === currentMonthKey;
+                return (
+                  <li key={key}>
+                    <button
+                      className={`cal-overview-row${isActive ? ' cal-overview-row--active' : ''}`}
+                      onClick={() => goToMonth(key)}
+                    >
+                      <span className="cal-overview-month">{monthKeyLabel(key)}</span>
+                      <div className="cal-overview-amounts">
+                        <span className="cal-overview-total">{formatPrice(total)}</span>
+                        {upcoming > 0 && (
+                          <span className="cal-overview-upcoming">{formatPrice(upcoming)} upcoming</span>
+                        )}
+                      </div>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
 
-        {showAddForm && (
-          <form className="todo-add-form" onSubmit={handleAddTodo}>
-            <input
-              type="text"
-              className="todo-form-input"
-              placeholder="What needs doing?"
-              value={newTodo.description}
-              onChange={(e) => setNewTodo((p) => ({ ...p, description: e.target.value }))}
-              autoFocus
-            />
-            <input
-              type="date"
-              className="todo-form-input"
-              value={newTodo.date}
-              onChange={(e) => setNewTodo((p) => ({ ...p, date: e.target.value }))}
-            />
-            <select
-              className="todo-form-select"
-              value={newTodo.urgency}
-              onChange={(e) => setNewTodo((p) => ({ ...p, urgency: Number(e.target.value) }))}
-            >
-              <option value={1}>❗ Low</option>
-              <option value={2}>❗❗ Medium</option>
-              <option value={3}>❗❗❗ High</option>
-            </select>
-            <button type="submit" className="btn-primary todo-form-submit">Add item</button>
-          </form>
-        )}
+        {/* To Do */}
+        <div className="todo-panel">
+          <div className="todo-panel-header">
+            <span className="todo-panel-title">To Do</span>
+            <button className="btn-primary" onClick={() => setShowAddForm((v) => !v)}>
+              {showAddForm ? 'Cancel' : '+ Add'}
+            </button>
+          </div>
 
-        <ul className="todo-list">
-          {sortedTodos.length === 0 ? (
-            <li className="todo-empty">No to-do items yet.</li>
-          ) : (
-            sortedTodos.map((t) => (
-              <li key={t.id} className="todo-item">
-                <div className="todo-item-body">
-                  <span className="todo-urgency">{URGENCY_ICONS[t.urgency]}</span>
-                  <span className="todo-desc">{t.description}</span>
-                </div>
-                {t.date && (
-                  <span className="todo-date">
-                    {new Date(t.date + 'T00:00:00').toLocaleDateString('en-MY', {
-                      day: 'numeric', month: 'short',
-                    })}
-                  </span>
-                )}
-                <button className="todo-delete" onClick={() => handleDeleteTodo(t.id)} title="Delete">×</button>
-              </li>
-            ))
+          {showAddForm && (
+            <form className="todo-add-form" onSubmit={handleAddTodo}>
+              <input
+                type="text"
+                className="todo-form-input"
+                placeholder="What needs doing?"
+                value={newTodo.description}
+                onChange={(e) => setNewTodo((p) => ({ ...p, description: e.target.value }))}
+                autoFocus
+              />
+              <input
+                type="date"
+                className="todo-form-input"
+                value={newTodo.date}
+                onChange={(e) => setNewTodo((p) => ({ ...p, date: e.target.value }))}
+              />
+              <select
+                className="todo-form-select"
+                value={newTodo.urgency}
+                onChange={(e) => setNewTodo((p) => ({ ...p, urgency: Number(e.target.value) }))}
+              >
+                <option value={1}>❗ Low</option>
+                <option value={2}>❗❗ Medium</option>
+                <option value={3}>❗❗❗ High</option>
+              </select>
+              <button type="submit" className="btn-primary todo-form-submit">Add item</button>
+            </form>
           )}
-        </ul>
+
+          <ul className="todo-list">
+            {sortedTodos.length === 0 ? (
+              <li className="todo-empty">No to-do items yet.</li>
+            ) : (
+              sortedTodos.map((t) => (
+                <li key={t.id} className="todo-item">
+                  <div className="todo-item-body">
+                    <span className="todo-urgency">{URGENCY_ICONS[t.urgency]}</span>
+                    <span className="todo-desc">{t.description}</span>
+                  </div>
+                  {t.date && (
+                    <span className="todo-date">
+                      {new Date(t.date + 'T00:00:00').toLocaleDateString('en-MY', {
+                        day: 'numeric', month: 'short',
+                      })}
+                    </span>
+                  )}
+                  <button className="todo-delete" onClick={() => handleDeleteTodo(t.id)} title="Delete">×</button>
+                </li>
+              ))
+            )}
+          </ul>
+        </div>
       </div>
 
       {/* ── Day detail modal ── */}

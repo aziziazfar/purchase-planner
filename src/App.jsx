@@ -3,7 +3,6 @@ import { Routes, Route, useParams } from 'react-router-dom';
 import { listenToRoom, saveRoom } from './data/firestore';
 import { exportToFile, importFromFile } from './data/io';
 import ItemList from './views/ItemList';
-import TimelineTable from './views/Timeline';
 import PhaseView from './views/Phase';
 import ContributionsView from './views/Contributions';
 import CalendarView from './views/Calendar';
@@ -131,9 +130,6 @@ function RoomApp() {
         <button className={`tab ${tab === 'list' ? 'active' : ''}`} onClick={() => setTab('list')}>
           Item List
         </button>
-        <button className={`tab ${tab === 'timeline' ? 'active' : ''}`} onClick={() => setTab('timeline')}>
-          Timeline View
-        </button>
         <button className={`tab ${tab === 'phase' ? 'active' : ''}`} onClick={() => setTab('phase')}>
           Phase View
         </button>
@@ -150,14 +146,12 @@ function RoomApp() {
           <div className="sync-loading">Connecting…</div>
         ) : tab === 'list' ? (
           <ItemList items={items} onEdit={handleEdit} onDelete={handleDelete} onAdd={handleAdd} onTogglePurchased={handleTogglePurchased} />
-        ) : tab === 'timeline' ? (
-          <TimelineTable items={items} onEdit={handleEdit} onDelete={handleDelete} onAdd={handleAdd} />
         ) : tab === 'phase' ? (
           <PhaseView items={items} onAdd={handleAdd} />
         ) : tab === 'contributions' ? (
           <ContributionsView items={items} profiles={profiles} onAdd={handleAdd} />
         ) : (
-          <CalendarView items={items} todos={todos} onTodosChange={handleTodosChange} onEdit={handleEdit} />
+          <CalendarView items={items} todos={todos} onTodosChange={handleTodosChange} onEdit={handleEdit} onAdd={handleAdd} />
         )}
       </main>
 

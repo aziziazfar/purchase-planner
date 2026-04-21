@@ -1710,9 +1710,112 @@ html, body, #root, .app {
   margin-bottom: 2px;
 }
 
+/* ── Right panel wrapper ── */
+.cal-right-panel {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Monthly overview ── */
+.cal-overview-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--glass-shadow);
+}
+
+.cal-overview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--th-bg);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.cal-overview-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.cal-overview-empty {
+  padding: 16px;
+  font-size: 12px;
+  color: var(--text-subtle);
+  text-align: center;
+}
+
+.cal-overview-list {
+  list-style: none;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.cal-overview-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--row-border);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.cal-overview-list li:last-child .cal-overview-row {
+  border-bottom: none;
+}
+
+.cal-overview-row:hover {
+  background: var(--row-hover);
+}
+
+.cal-overview-row--active {
+  background: rgba(167, 139, 250, 0.08);
+}
+
+.cal-overview-row--active .cal-overview-month {
+  color: var(--accent-hover);
+}
+
+.cal-overview-month {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cal-overview-amounts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.cal-overview-total {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.cal-overview-upcoming {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
 /* ── Todo Panel ── */
 .todo-panel {
-  width: 280px;
   flex-shrink: 0;
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
@@ -1862,7 +1965,7 @@ html, body, #root, .app {
   .calendar-view {
     flex-direction: column;
   }
-  .todo-panel {
+  .cal-right-panel {
     width: 100%;
   }
   .cal-cell {
