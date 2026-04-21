@@ -208,8 +208,6 @@ export default function ContributionsView({ items, profiles, onAdd }) {
 
                     {/* Items */}
                     {monthItems.map((item) => {
-                      const totalContributed = (item.paidBy || []).reduce((s, p) => s + Number(p.amount), 0);
-                      const pct = item.price > 0 ? Math.min(100, Math.round(totalContributed / item.price * 100)) : 0;
                       return (
                         <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 20px', borderBottom: '1px solid var(--border)' }}>
                           {/* Phase color bar */}
@@ -217,7 +215,7 @@ export default function ContributionsView({ items, profiles, onAdd }) {
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--t1)', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</div>
                             <div style={{ fontSize: 11, color: 'var(--t3)' }}>
-                              {fmtDate(item.plannedDate)} · {fmt(item.price)} total · {pct}% funded
+                              {fmtDate(item.plannedDate)} · {fmt(item.price)} total
                             </div>
                           </div>
                           <div style={{ textAlign: 'right', flexShrink: 0 }}>

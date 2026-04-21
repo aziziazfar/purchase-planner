@@ -260,7 +260,7 @@ function RoomApp() {
           ) : tab === 'list' ? (
             <ItemList items={items} onEdit={handleEdit} onDelete={handleDelete} onAdd={handleAdd} onTogglePurchased={handleTogglePurchased} />
           ) : tab === 'phase' ? (
-            <PhaseView items={items} onAdd={handleAdd} />
+            <PhaseView items={items} profiles={profiles} onAdd={handleAdd} onEdit={handleEdit} />
           ) : tab === 'contributions' ? (
             <ContributionsView items={items} profiles={profiles} onAdd={handleAdd} />
           ) : (

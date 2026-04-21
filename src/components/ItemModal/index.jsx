@@ -136,7 +136,7 @@ export default function ItemModal({ item, profiles, onSave, onClose, onCreatePro
               <span className="paid-by-label">Paid By</span>
               {profiles.length > 0 && (
                 <button type="button" className="btn-equal-split" onClick={handleEqualSplit}>
-                  Equal Split
+                  Split Equally
                 </button>
               )}
             </div>

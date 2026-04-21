@@ -34,13 +34,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 20px 20px 16px;
+  height: 52px;
+  padding: 0 20px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
 
 .sidebar--collapsed .sidebar-logo {
-  padding: 20px 0 16px;
+  padding: 0;
   justify-content: center;
 }
 
@@ -856,6 +857,19 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.btn-equal-split {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-equal-split:hover { opacity: 0.8; }
 
 .paid-by-label {
   font-size: 11px;
