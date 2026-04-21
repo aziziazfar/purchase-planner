@@ -1523,13 +1523,13 @@ html, body, #root, .app {
 }
 
 .cal-cell {
-  min-height: 80px;
+  min-height: 96px;
   padding: 7px 8px;
   border-bottom: 1px solid var(--row-border);
   border-right: 1px solid var(--row-border);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .cal-cell:nth-child(7n) {
@@ -1591,6 +1591,17 @@ html, body, #root, .app {
   opacity: 0.4;
 }
 
+.cal-payment-chip--clickable {
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.cal-payment-chip--clickable:hover {
+  border-color: var(--glass-border-heavy);
+  background: var(--card-hover-bg);
+}
+
 .cal-payment-name {
   font-size: 11px;
   font-weight: 600;
@@ -1604,6 +1615,99 @@ html, body, #root, .app {
   font-size: 10px;
   color: var(--accent-hover);
   font-weight: 600;
+}
+
+.cal-cell-items {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cal-overflow-btn {
+  background: none;
+  border: none;
+  padding: 1px 0;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-subtle);
+  cursor: pointer;
+  text-align: left;
+  letter-spacing: 0.1px;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+
+.cal-overflow-btn:hover {
+  color: var(--accent-hover);
+}
+
+/* Full-width variants inside the day modal */
+.cal-todo-chip--full,
+.cal-payment-chip--full {
+  white-space: normal;
+}
+
+/* ── Day detail modal ── */
+.cal-day-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 150;
+  padding: 20px;
+}
+
+.cal-day-modal {
+  background: var(--modal-bg);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--glass-border-heavy);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 340px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.cal-day-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.cal-day-modal-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.cal-day-modal-body {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cal-day-modal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cal-day-modal-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-subtle);
+  margin-bottom: 2px;
 }
 
 /* ── Todo Panel ── */
@@ -1762,11 +1866,11 @@ html, body, #root, .app {
     width: 100%;
   }
   .cal-cell {
-    min-height: 54px;
+    min-height: 72px;
     padding: 4px 5px;
   }
-  .cal-payment-chip {
-    display: none;
+  .cal-day-modal {
+    max-width: 100%;
   }
 }
 

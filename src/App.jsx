@@ -157,7 +157,7 @@ function RoomApp() {
         ) : tab === 'contributions' ? (
           <ContributionsView items={items} profiles={profiles} onAdd={handleAdd} />
         ) : (
-          <CalendarView items={items} todos={todos} onTodosChange={handleTodosChange} />
+          <CalendarView items={items} todos={todos} onTodosChange={handleTodosChange} onEdit={handleEdit} />
         )}
       </main>
 
