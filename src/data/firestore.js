@@ -13,7 +13,7 @@ export async function createRoom(roomId) {
   if (snapshot.data().count >= ROOM_LIMIT) {
     throw new Error(`Room limit of ${ROOM_LIMIT} reached.`);
   }
-  await setDoc(doc(db, 'rooms', roomId), { items: [], profiles: [] });
+  await setDoc(doc(db, 'rooms', roomId), { items: [], profiles: [], todos: [] });
 }
 
 export function listenToRoom(roomId, callback) {
