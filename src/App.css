@@ -1846,7 +1846,7 @@
   /* Modal — slides up */
   .modal-backdrop { align-items: flex-end; padding: 0; }
   .modal { max-width: 100%; border-radius: 14px 14px 0 0; max-height: 92vh; }
-  .modal input[type="date"] { -webkit-appearance: none; appearance: none; width: 100%; }
+  .modal input[type="date"] { -webkit-appearance: none; appearance: none; width: 100%; min-width: 0; }
 
   .paid-by-row { flex-wrap: wrap; }
   .paid-by-amount { width: 100%; }
