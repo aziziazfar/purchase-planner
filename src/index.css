@@ -65,3 +65,10 @@ input:focus, select:focus, textarea:focus {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
+
+/* Prevent iOS Safari auto-zoom when focusing inputs (triggered by font-size < 16px) */
+@supports (-webkit-touch-callout: none) {
+  input, select, textarea {
+    font-size: 16px;
+  }
+}

@@ -1758,23 +1758,24 @@
 * { min-width: 0; }
 
 @media (max-width: 640px) {
+  /* ── Base scale ── */
+  body { font-size: 16px; }
+
   .sidebar { display: none; }
+  .app-main { margin-left: 0 !important; }
 
-  .app-main {
-    margin-left: 0 !important;
-  }
-
-  .app-topbar {
-    padding: 0 16px;
-  }
+  /* ── Topbar ── */
+  .app-topbar { padding: 0 16px; height: 56px; }
+  .app-topbar-title { font-size: 17px; }
+  .room-id-badge { font-size: 12px; padding: 3px 9px; }
 
   .topbar-theme-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
     border: 1px solid var(--border);
     background: var(--surface);
     color: var(--t2);
@@ -1782,11 +1783,9 @@
   }
   .topbar-theme-toggle:hover { background: var(--surface2); }
 
-  .main-content {
-    padding: 14px 16px;
-  }
+  .main-content { padding: 16px; }
 
-  /* Mobile bottom nav */
+  /* ── Mobile bottom nav ── */
   .mobile-nav {
     display: flex;
     position: fixed;
@@ -1804,23 +1803,54 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
-    padding: 10px 4px;
+    gap: 4px;
+    padding: 10px 4px 8px;
+    min-height: 56px;
     border: none;
     background: transparent;
     color: var(--t3);
-    font-size: 10px;
+    font-size: 11px;
     cursor: pointer;
-    transition: color 0.15s;
+    transition: color 0.15s, opacity 0.1s;
   }
 
+  .mobile-nav-item svg { width: 22px; height: 22px; }
   .mobile-nav-item--active { color: var(--accent); }
+  .mobile-nav-item:active { opacity: 0.5; }
 
   .main-content {
-    padding-bottom: calc(70px + env(safe-area-inset-bottom));
+    padding-bottom: calc(74px + env(safe-area-inset-bottom));
   }
 
-  /* Item list → cards */
+  /* ── Buttons ── */
+  .btn-primary, .btn-secondary {
+    font-size: 15px;
+    padding: 10px 18px;
+    min-height: 44px;
+  }
+  .btn-edit, .btn-delete {
+    font-size: 13px;
+    padding: 8px 14px;
+    min-height: 36px;
+  }
+  .close-btn { padding: 8px 12px; font-size: 15px; min-height: 36px; }
+
+  /* ── Toolbar ── */
+  .list-toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
+  .list-controls { justify-content: space-between; }
+  .list-controls select {
+    font-size: 16px;
+    padding: 10px 12px;
+    min-height: 44px;
+  }
+
+  /* ── Budget summary ── */
+  .budget-summary { flex-wrap: nowrap; align-items: center; gap: 10px; padding: 12px 16px; overflow: hidden; }
+  .budget-label { font-size: 12px; flex-shrink: 0; }
+  .budget-amount { font-size: 22px; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .budget-count { font-size: 12px; padding: 3px 10px; flex-shrink: 0; margin-left: auto; }
+
+  /* ── Item list → cards ── */
   .items-table,
   .items-table tbody { display: block; width: 100%; }
   .items-table thead { display: none; }
@@ -1828,23 +1858,24 @@
   .items-table tfoot tr {
     display: flex;
     justify-content: space-between;
-    padding: 9px 13px;
+    align-items: center;
+    padding: 12px 16px;
     background: var(--surface2);
-    border-radius: 8px;
-    margin-top: 5px;
+    border-radius: 10px;
+    margin-top: 6px;
   }
-  .items-table tfoot td { display: block; padding: 0; border: none; }
+  .items-table tfoot td { display: block; padding: 0; border: none; font-size: 14px; }
 
   .items-table tbody tr {
     display: grid;
-    grid-template-columns: 28px 1fr auto;
+    grid-template-columns: 30px 1fr auto;
     grid-template-rows: auto auto auto;
-    gap: 3px 7px;
+    gap: 5px 8px;
     background: var(--surface);
     border: 1px solid var(--border) !important;
-    border-radius: 8px;
-    padding: 11px;
-    margin-bottom: 7px;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
     width: 100%;
     box-sizing: border-box;
     box-shadow: var(--shadow);
@@ -1853,57 +1884,113 @@
   .items-table tbody tr.row-purchased { opacity: 0.5; }
   .items-table td { display: block; padding: 0; border: none !important; overflow: hidden; text-overflow: ellipsis; }
 
-  .col-check { grid-column: 1; grid-row: 1; display: flex; align-items: flex-start; padding-top: 2px; width: auto; text-align: left; }
+  .col-check { grid-column: 1; grid-row: 1; display: flex; align-items: flex-start; padding-top: 4px; width: auto; text-align: left; }
   .items-table tbody tr td:nth-child(2) { grid-column: 2; grid-row: 1; }
   .items-table tbody tr td:nth-child(3) { grid-column: 3; grid-row: 1; text-align: right; }
-  .items-table tbody tr td:nth-child(4) { grid-column: 2; grid-row: 2; font-size: 11px; color: var(--t3); }
-  .items-table tbody tr td:nth-child(5) { grid-column: 3; grid-row: 2; text-align: right; font-size: 13px; }
+  .items-table tbody tr td:nth-child(4) { grid-column: 2; grid-row: 2; font-size: 13px; color: var(--t3); }
+  .items-table tbody tr td:nth-child(5) { grid-column: 3; grid-row: 2; text-align: right; font-size: 15px; font-weight: 600; color: var(--accent); }
   .items-table tbody tr td:nth-child(6) { display: none; }
   .items-table tbody tr td:nth-child(7) {
     grid-column: 1 / -1; grid-row: 3;
-    padding-top: 8px;
+    padding-top: 10px;
     border-top: 1px solid var(--border) !important;
-    margin-top: 3px;
+    margin-top: 5px;
   }
   .action-buttons { justify-content: flex-end; }
 
+  /* Item card typography */
+  .item-name { font-size: 16px; font-weight: 600; }
+  .item-details { font-size: 13px; line-height: 1.5; }
+  .item-link { font-size: 13px; margin-top: 4px; }
+  .price-cell { font-size: 15px; }
+  .phase-badge { font-size: 12px; padding: 3px 9px; }
+  .purchase-checkbox { width: 20px; height: 20px; }
+
   .items-table tbody tr.purchased-divider {
     display: block; width: 100%; padding: 0; background: none;
-    border: none !important; border-radius: 0; margin-bottom: 3px;
+    border: none !important; border-radius: 0; margin-bottom: 4px;
   }
-  .items-table tbody tr.purchased-divider td { display: block; width: 100%; box-sizing: border-box; border-radius: 6px; }
+  .items-table tbody tr.purchased-divider td {
+    display: block; width: 100%; box-sizing: border-box;
+    border-radius: 6px; font-size: 12px;
+  }
 
-  /* Timeline */
-  .timeline-table th { min-width: clamp(150px, 55vw, 210px); }
+  /* Empty state */
+  .empty-state { font-size: 15px; padding: 48px 20px; }
 
-  /* Phase */
+  /* ── Timeline ── */
+  .timeline-table th { min-width: clamp(160px, 60vw, 220px); }
+  .month-name { font-size: 14px; }
+  .month-total { font-size: 13px; }
+  .card-name { font-size: 14px; }
+  .card-price { font-size: 14px; }
+  .card-details { font-size: 13px; }
+
+  /* ── Phase ── */
   .phase-columns { flex-direction: column; }
   .phase-column { min-width: unset; width: 100%; }
+  .phase-column-title { font-size: 15px; }
+  .phase-column-total { font-size: 15px; }
+  .phase-column-upcoming { font-size: 12px; }
+  .phase-item { padding: 11px 14px; min-height: 44px; }
+  .phase-item-name { font-size: 15px; }
+  .phase-item-price { font-size: 13px; }
 
-  /* Calendar */
+  /* ── Calendar ── */
   .calendar-view { flex-direction: column; }
   .calendar-panel { width: 100%; flex: none; align-self: stretch; }
   .cal-right-panel { width: 100%; }
-  .calendar-grid { grid-auto-rows: 60px; }
-  .cal-cell { min-height: unset; height: 60px; padding: 4px 5px; overflow: hidden; }
+  .calendar-grid { grid-auto-rows: 66px; }
+  .cal-cell { min-height: unset; height: 66px; padding: 5px; overflow: hidden; }
+  .cal-month-label { font-size: 16px; }
+  .cal-date-num { font-size: 13px; }
+  .cal-date-num--today { width: 24px; height: 24px; font-size: 12px; }
+  .cal-payment-name { font-size: 11px; }
+  .cal-payment-price { font-size: 10px; }
+  .cal-todo-chip { font-size: 11px; }
+  .cal-nav-btn { width: 36px; height: 36px; font-size: 18px; }
+  .cal-overview-month { font-size: 13px; }
+  .cal-overview-total { font-size: 13px; }
+  .cal-overview-row { padding: 11px 14px; min-height: 44px; }
 
-  /* Contributions */
+  /* ── Todo panel ── */
+  .todo-panel-title { font-size: 14px; }
+  .todo-desc { font-size: 14px; }
+  .todo-date { font-size: 12px; }
+  .todo-item { padding: 11px 12px; min-height: 44px; }
+  .todo-form-input, .todo-form-select { font-size: 16px; padding: 10px; min-height: 44px; }
+
+  /* ── Contributions ── */
   .cv-profile-row { flex-direction: column; gap: 8px; }
   .cv-profile-detail { flex-direction: column; gap: 10px; }
   .cv-section { min-width: unset; width: 100%; }
   .cv-phase-totals { flex-direction: column; align-items: flex-start; }
+  .cv-phase-title { font-size: 15px; }
+  .cv-profile-name { font-size: 15px; }
+  .cv-item-name { font-size: 13px; }
+  .cv-item-amount { font-size: 13px; }
+  .cv-subtotal { font-size: 13px; }
 
-  /* Modal — slides up */
+  /* ── Modal — slides up ── */
   .modal-backdrop { align-items: flex-end; padding: 0; }
-  .modal { max-width: 100%; border-radius: 14px 14px 0 0; max-height: 92vh; }
+  .modal { max-width: 100%; border-radius: 16px 16px 0 0; max-height: 92vh; }
+  .modal-header { padding: 20px 20px 0; }
+  .modal-header h2 { font-size: 18px; }
+  .modal label { font-size: 13px; }
+  .modal input:not(.paid-by-amount), .modal textarea {
+    font-size: 16px;
+    padding: 11px 12px;
+    min-height: 46px;
+  }
   .paid-by-row { flex-wrap: wrap; }
-  .paid-by-amount { width: 100%; }
+  .paid-by-amount { width: 100%; font-size: 16px; min-height: 44px; }
+  .star { font-size: 20px; }
+  .star-rating { gap: 6px; }
+  .btn-equal-split { font-size: 12px; padding: 6px 12px; min-height: 32px; }
 
-
-  .list-toolbar { flex-direction: column; align-items: stretch; gap: 9px; }
-  .budget-summary { flex-wrap: wrap; gap: 7px 10px; padding: 9px 13px; }
-  .budget-amount { font-size: 16px; }
-  .list-controls { justify-content: space-between; }
+  /* ── Data menu ── */
+  .data-menu-trigger { font-size: 14px; padding: 8px 13px; min-height: 38px; }
+  .data-menu-item { font-size: 14px; padding: 10px 11px; }
 }
 
 @media (min-width: 641px) {
