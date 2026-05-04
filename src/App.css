@@ -1,4 +1,21 @@
 /* ═══════════════════════════════════════
+   EASING + MOTION TOKENS
+   ═══════════════════════════════════════ */
+
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ═══════════════════════════════════════
    APP SHELL
    ═══════════════════════════════════════ */
 
@@ -21,7 +38,7 @@
   display: flex;
   flex-direction: column;
   z-index: 100;
-  transition: width 0.2s;
+  transition: width 0.2s var(--ease-out);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -98,6 +115,11 @@
   padding: 10px 0;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .sidebar-nav-item:hover { background: var(--surface2); }
+}
+.sidebar-nav-item:active { transform: scale(0.97); }
+
 .sidebar-nav-item:hover {
   background: var(--surface2);
 }
@@ -159,7 +181,7 @@
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-  transition: margin-left 0.2s;
+  transition: margin-left 0.2s var(--ease-out);
 }
 
 .app-main--collapsed {
@@ -227,8 +249,18 @@
   white-space: nowrap;
 }
 
-.btn-primary:hover {
-  opacity: 0.88;
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-secondary:hover { background: var(--surface2); }
+  .btn-edit:hover { opacity: 0.8; }
+  .btn-delete:hover { opacity: 0.8; }
+}
+
+.btn-primary:active,
+.btn-secondary:active,
+.btn-edit:active,
+.btn-delete:active {
+  transform: scale(0.97);
 }
 
 .btn-secondary {
@@ -244,10 +276,6 @@
   white-space: nowrap;
 }
 
-.btn-secondary:hover {
-  background: var(--surface2);
-}
-
 .btn-edit {
   background: var(--accent-soft);
   color: var(--accent);
@@ -260,8 +288,6 @@
   transition: opacity 0.15s;
 }
 
-.btn-edit:hover { opacity: 0.8; }
-
 .btn-delete {
   background: var(--red-soft);
   color: var(--red);
@@ -273,8 +299,6 @@
   cursor: pointer;
   transition: opacity 0.15s;
 }
-
-.btn-delete:hover { opacity: 0.8; }
 
 /* ── Toolbar ── */
 .list-toolbar {
@@ -869,7 +893,10 @@
   cursor: pointer;
   transition: opacity 0.15s;
 }
-.btn-equal-split:hover { opacity: 0.8; }
+@media (hover: hover) and (pointer: fine) {
+  .btn-equal-split:hover { opacity: 0.8; }
+}
+.btn-equal-split:active { transform: scale(0.97); }
 
 .paid-by-label {
   font-size: 11px;
@@ -908,11 +935,14 @@
   font-size: 12px;
   color: var(--t3);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: border-color 0.15s, color 0.15s;
   text-align: left;
 }
 
-.btn-add-profile:hover { border-color: var(--accent); color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .btn-add-profile:hover { border-color: var(--accent); color: var(--accent); }
+}
+.btn-add-profile:active { transform: scale(0.97); }
 
 .new-profile-row { display: flex; gap: 5px; align-items: center; }
 
@@ -1393,6 +1423,21 @@
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: var(--shadow-md);
+  animation: modal-in 0.2s var(--ease-out);
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-backdrop {
+  animation: backdrop-in 0.15s ease;
+}
+
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .modal-header {
@@ -1553,15 +1598,15 @@
   border-radius: 6px;
   white-space: nowrap;
   box-shadow: var(--shadow);
-  animation: toast-in 0.2s ease;
+  animation: toast-in 0.2s var(--ease-out);
   z-index: 201;
 }
 
 .data-toast-error { background: var(--red); }
 
 @keyframes toast-in {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 /* ═══════════════════════════════════════
@@ -1669,6 +1714,9 @@
 }
 
 .landing-btn-secondary:hover:not(:disabled) { background: var(--border); }
+.landing-btn-secondary:active:not(:disabled),
+.landing-btn-primary:active:not(:disabled),
+.landing-btn-generate:active { transform: scale(0.97); }
 
 .landing-btn-primary {
   background: var(--accent);
